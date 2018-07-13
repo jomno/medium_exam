@@ -1,0 +1,52 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @post.title %>
+</p>
+
+<p>
+  <strong>Content:</strong>
+
+</p>
+<div class="editable">
+  <%= @post.content.html_safe %>
+</div>
+<DIV ID="outputdiv"></DIV>
+
+<%= link_to 'Edit', edit_post_path(@post) %> |
+<%= link_to 'Back', posts_path %>
+<script>
+  var dmp = new diff_match_patch();
+  // var diff = dmp.diff_main('Hello World.', 'Goodbye World.');
+  // // Result: [(-1, "Hell"), (1, "G"), (0, "o"), (1, "odbye"), (0, " World.")]
+  // dmp.diff_cleanupSemantic(diff);
+  // // Result: [(-1, "Hello"), (1, "Goodbye"), (0, " World.")]
+  // console.log(diff);
+
+  var editor = new MediumEditor('.editable',{
+  });
+
+  editor.subscribe('editableInput', function (eventObj, editable) {
+      // You can get the content of the editor at this point multiple ways
+      // console.log("eventObj : " + eventObj);
+      // console.log("editable : " + editable);
+      // console.log(editor.getContent());
+      var x = editable.innerHTML; // editable is the editor <div> element that was changed
+      var y = editor.getContent(); // getContent() returns the content of the editor as well
+      var change_text = $(".editable").text()
+      var reg_text = editable.innerHTML.replace(/<br>/gi,"\r\n").replace(/<p>/gi,"").replace(/<\/p>/gi,"\r\n")
+      // debugger
+      var diff = dmp.diff_main("<%= @post.content.html_safe %>", reg_text);
+      dmp.diff_cleanupSemantic(diff);
+      // Result: [(-1, "Hello"), (1, "Goodbye"), (0, " World.")]
+      var ds = dmp.diff_prettyHtml(diff);
+      console.log("editable : " + editable.innerHTML);
+      console.log("reg_text : " + reg_text);
+      console.log("change_text : " + change_text);
+      console.log("diff : " + diff);
+      document.getElementById('outputdiv').innerHTML = ds;
+  });
+
+
+</script>
