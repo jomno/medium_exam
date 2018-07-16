@@ -18,12 +18,6 @@
 <%= link_to 'Back', posts_path %>
 <script>
   var dmp = new diff_match_patch();
-  // var diff = dmp.diff_main('Hello World.', 'Goodbye World.');
-  // // Result: [(-1, "Hell"), (1, "G"), (0, "o"), (1, "odbye"), (0, " World.")]
-  // dmp.diff_cleanupSemantic(diff);
-  // // Result: [(-1, "Hello"), (1, "Goodbye"), (0, " World.")]
-  // console.log(diff);
-
   var editor = new MediumEditor('.editable',{
   });
 
@@ -35,13 +29,15 @@
       var x = editable.innerHTML; // editable is the editor <div> element that was changed
       var y = editor.getContent(); // getContent() returns the content of the editor as well
       var change_text = $(".editable").text()
-      var reg_text = editable.innerHTML.replace(/<br>/gi,"\r\n").replace(/<p>/gi,"").replace(/<\/p>/gi,"\r\n")
+      var reg_text = editable.innerHTML.replace(/<p>/gi,"").replace(/<\/p>/gi,"\r\n").replace(/<br>/gi,"\r\n")
+      var innet_text = editable.innerText.replace(/\n/g, "");
       // debugger
-      var diff = dmp.diff_main("<%= @post.content.html_safe %>", reg_text);
+      var diff = dmp.diff_main("<%= @post.content %>", innet_text);
       dmp.diff_cleanupSemantic(diff);
       // Result: [(-1, "Hello"), (1, "Goodbye"), (0, " World.")]
       var ds = dmp.diff_prettyHtml(diff);
       console.log("editable : " + editable.innerHTML);
+      console.log("innet_text : " + innet_text);
       console.log("reg_text : " + reg_text);
       console.log("change_text : " + change_text);
       console.log("diff : " + diff);
