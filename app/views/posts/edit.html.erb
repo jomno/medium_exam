@@ -1,6 +1,50 @@
 <h1>Editing Post</h1>
 
-<%= render 'form', post: @post %>
+<%= form_with(model: @post, local: true) do |form| %>
+
+  <div class="field">
+    <%= form.label :title %>
+    <%= form.text_field :title, id: :post_title %>
+  </div>
+
+  <div id="outputdiv"></div>
+  <div class="field">
+    <%= form.label :content %>
+    <%= form.hidden_field :content, id: :post_content %>
+    <div class="editable" id="editable">
+      <%= @post.content.html_safe %>
+    </div>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
+
 
 <%= link_to 'Show', @post %> |
 <%= link_to 'Back', posts_path %>
+<script>
+var dmp = new diff_match_patch();
+var editor = new MediumEditor('.editable',{
+});
+
+editor.subscribe('editableInput', function (eventObj, editable) {
+    var x = editable.innerHTML; // editable is the editor <div> element that was changed
+    var y = editor.getContent(); // getContent() returns the content of the editor as well
+    var change_text = $(".editable").text()
+    var reg_text = editable.innerHTML.replace(/<p>/gi,"").replace(/<\/p>/gi,"\r\n").replace(/<br>/gi,"\r\n")
+    var innet_text = editable.innerText.replace(/\n/g, "");
+    // debugger
+    var diff = dmp.diff_main("<%= @post.content %>", innet_text);
+    dmp.diff_cleanupSemantic(diff);
+    // Result: [(-1, "Hello"), (1, "Goodbye"), (0, " World.")]
+    var ds = dmp.diff_prettyHtml(diff);
+    document.getElementById('outputdiv').innerHTML = ds;
+    console.log(ds);
+    document.getElementById("post_content").innerHTML = ds;
+    // debugger
+
+
+});
+</script>

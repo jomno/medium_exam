@@ -9,14 +9,50 @@
   <strong>Content:</strong>
 
 </p>
-<div class="editable">
+<textarea class="editable2" id="editable2">
+  <%= @post.content.html_safe %>
+</textarea>
+
+<div class="editable" id="editable">
   <%= @post.content.html_safe %>
 </div>
-<DIV ID="outputdiv"></DIV>
+<div ID="outputdiv"></div>
 
 <%= link_to 'Edit', edit_post_path(@post) %> |
 <%= link_to 'Back', posts_path %>
+
 <script>
+
+  // $(".editable").
+  $('div.editable').keydown(function(event) {
+    console.log(event);
+    // event.preventDefault();
+    if (event.keyCode != 229) {
+      var editTarget = event.target.previousElementSibling;
+
+      if(event.keyCode == 8){
+        editTarget.textContent = editTarget.textContent.replace(/\n/gi,"").slice(0,-1);
+      }else{
+        editTarget.textContent = editTarget.textContent.replace(/\n/gi,"") + event.key
+      };
+    } else {
+      var original = event.target.textContent.trim().slice(0, -1);
+      event.target.textContent = original
+      event.target.selectionEnd
+      event.target.nextElementSibling.innerHTML = "<span>" + original + "</span>"
+    }
+    // event.stopPropagation();
+
+    // console.log(event.keyCode);
+
+    // var e = $.Event( "keydown", { keyCode: 8 } );
+    // console.log(event.keyCode);
+
+    // $(".editable2").trigger(e);
+
+    return false;
+  });
+
   var dmp = new diff_match_patch();
   var editor = new MediumEditor('.editable',{
   });
@@ -30,18 +66,23 @@
       var y = editor.getContent(); // getContent() returns the content of the editor as well
       var change_text = $(".editable").text()
       var reg_text = editable.innerHTML.replace(/<p>/gi,"").replace(/<\/p>/gi,"\r\n").replace(/<br>/gi,"\r\n")
-      var innet_text = editable.innerText.replace(/\n/g, "");
+      var innet_text = editable.innerText.replace(/\n/gi,"").replace(/^\s*/,"");
       // debugger
       var diff = dmp.diff_main("<%= @post.content %>", innet_text);
       dmp.diff_cleanupSemantic(diff);
       // Result: [(-1, "Hello"), (1, "Goodbye"), (0, " World.")]
       var ds = dmp.diff_prettyHtml(diff);
-      console.log("editable : " + editable.innerHTML);
-      console.log("innet_text : " + innet_text);
-      console.log("reg_text : " + reg_text);
-      console.log("change_text : " + change_text);
-      console.log("diff : " + diff);
+      // console.log("content : " + "<%= @post.content.html_safe %>");
+      // console.log("editable : " + editable.innerHTML);
+      // console.log("innet_text : " + innet_text);
+      // console.log("reg_text : " + reg_text);
+      // console.log("change_text : " + change_text);
+      // console.log("diff : " + diff);
       document.getElementById('outputdiv').innerHTML = ds;
+      // playAlert = setInterval(function() {
+      //    document.getElementById('editable').innerHTML = ds;
+      // }, 3000);
+
   });
 
 
