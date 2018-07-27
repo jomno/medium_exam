@@ -18,7 +18,12 @@
 
   <div class="field">
     <%= form.label :content %>
-    <%= form.text_area :content, id: :post_content %>
+    <%#= form.text_area :content, id: :post_content %>
+    <%= form.cktext_area :content, id: :post_content, class: 'someclass', ckeditor: { language: 'en'} do %>
+    <%#= @post.content.html_safe %>
+    <% end %>
+    <%#= form.cktext_area :content, value: 'Default value', id: 'sometext' %>
+    <%#= cktext_area :page, :info, cols: 40, ckeditor: { uiColor: '#AADC6E', toolbar: 'mini' } %>
   </div>
 
   <div class="actions">

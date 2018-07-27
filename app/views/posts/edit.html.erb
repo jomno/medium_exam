@@ -1,26 +1,6 @@
 <h1>Editing Post</h1>
 
-<%= form_with(model: @post, local: true) do |form| %>
-
-  <div class="field">
-    <%= form.label :title %>
-    <%= form.text_field :title, id: :post_title %>
-  </div>
-
-  <div id="outputdiv"></div>
-  <div class="field">
-    <%= form.label :content %>
-    <%= form.hidden_field :content, id: :post_content %>
-    <div class="editable" id="editable">
-      <%= @post.content.html_safe %>
-    </div>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
-<% end %>
-
+<%= render 'form', post: @post %>
 
 <%= link_to 'Show', @post %> |
 <%= link_to 'Back', posts_path %>
